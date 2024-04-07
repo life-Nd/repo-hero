@@ -60,7 +60,7 @@ const maxChildren = 9000;
 const lastCommitAccessor = (d) => new Date(d.commits?.[0]?.date + "0");
 const numberOfCommitsAccessor = (d) => d?.commits?.length || 0;
 export const Tree = (
-  { data, filesChanged = [], maxDepth = 9, colorEncoding = "type", customFileColors }:
+  { data, filesChanged = [], maxDepth = 9, colorEncoding = "type", customFileColors}:
     Props,
 ) => {
   const fileColors = { ...defaultFileColors, ...customFileColors };
@@ -74,8 +74,6 @@ export const Tree = (
       return d.children ? flatten(d.children.map(flattenTree)) : d;
     };
     const items = flattenTree(data);
-
-
     // @ts-ignore
     const flatTree = colorEncoding === "last-change"
       ? items.map(lastCommitAccessor).sort((a, b) => b - a).slice(0, -8)
@@ -180,226 +178,214 @@ export const Tree = (
 
   const selectedNode = selectedNodeId &&
     packedData.find((d) => d.data.path === selectedNodeId);
+
   const fileTypes = uniqBy(
     packedData.map((d) => fileColors[d.data.extension] && d.data.extension),
   ).sort().filter(Boolean);
 
 
-
   return (
-<svg
-      width= { width }
-  height = { height }
-  style = {{
-    background: "white",
-      fontFamily: "sans-serif",
+    <svg
+      width={width}
+      height={height}
+      style={{
+        background: "white",
+        fontFamily: "sans-serif",
         overflow: "visible",
-      }
-}
-xmlns = "http://www.w3.org/2000/svg"
-  >
-  <defs>
-  <filter id="glow" x = "-50%" y = "-50%" width = "200%" height = "200%" >
-    <feGaussianBlur stdDeviation="4" result = "coloredBlur" />
-      <feMerge>
-      <feMergeNode in="coloredBlur" />
-        <feMergeNode in="SourceGraphic" />
+      }}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
           </feMerge>
-          < /filter>
-          < /defs>
+        </filter>
+      </defs>
 
-{
-  packedData.map(({ x, y, r, depth, data, children, ...d }) => {
-    if (depth <= 0) return null;
-    if (depth > maxDepth) return null;
-    const isOutOfDepth = depth >= maxDepth;
-    const isParent = !!children;
-    let runningR = r;
-    // if (depth <= 1 && !children) runningR *= 3;
-    if (data.path === looseFilesId) return null;
-    const isHighlighted = filesChanged.includes(data.path);
-    const doHighlight = !!filesChanged.length;
+      {packedData.map(({ x, y, r, depth, data, children, ...d }) => {
+        if (depth <= 0) return null;
+        if (depth > maxDepth) return null;
+        const isOutOfDepth = depth >= maxDepth;
+        const isParent = !!children;
+        let runningR = r;
+        // if (depth <= 1 && !children) runningR *= 3;
+        if (data.path === looseFilesId) return null;
+        const isHighlighted = filesChanged.includes(data.path);
+        const doHighlight = !!filesChanged.length;
 
-    return (
-      <g
-            key= { data.path }
-    style = {{
-      fill: doHighlight
-        ? isHighlighted ? "#FCE68A" : "#ECEAEB"
-        : data.color,
-        transition: `transform ${isHighlighted ? "0.5s" : "0s"
-          } ease-out, fill 0.1s ease-out`,
+        return (
+          <g
+            key={data.path}
+            style={{
+              fill: doHighlight
+                ? isHighlighted ? "#FCE68A" : "#ECEAEB"
+                : data.color,
+              transition: `transform ${isHighlighted ? "0.5s" : "0s"
+                } ease-out, fill 0.1s ease-out`,
               // opacity: doHighlight && !isHighlighted ? 0.6 : 1,
-            }
-  }
-            transform = {`translate(${x}, ${y})`}
+            }}
+            transform={`translate(${x}, ${y})`}
           >
-{
-  isParent
-    ?(
+            {isParent
+              ? (
                 <>
-  <circle
-                    r={ r }
-style = {{ transition: "all 0.5s ease-out" }}
-stroke = "#290819"
-strokeOpacity = "0.2"
-strokeWidth = "1"
-fill = "white"
-  />
-  </>
+                  <circle
+                    r={r}
+                    style={{ transition: "all 0.5s ease-out" }}
+                    stroke="#290819"
+                    strokeOpacity="0.2"
+                    strokeWidth="1"
+                    fill="white"
+                  />
+                </>
               )
               : (
-  <circle
-                  style= {{
-  filter: isHighlighted ? "url(#glow)" : undefined,
-    transition: "all 0.5s ease-out",
+                <circle
+                  style={{
+                    filter: isHighlighted ? "url(#glow)" : undefined,
+                    transition: "all 0.5s ease-out",
                   }}
-r = { runningR }
-strokeWidth = { selectedNodeId === data.path ? 3 : 0}
-stroke = "#374151"
-  />
+                  r={runningR}
+                  strokeWidth={selectedNodeId === data.path ? 3 : 0}
+                  stroke="#374151"
+                />
               )}
-</g>
+          </g>
         );
       })}
 
-{
-  packedData.map(({ x, y, r, depth, data, children }) => {
-    if (depth <= 0) return null;
-    if (depth > maxDepth) return null;
-    const isParent = !!children && depth !== maxDepth;
-    if (!isParent) return null;
-    if (data.path === looseFilesId) return null;
-    if (r < 16 && selectedNodeId !== data.path) return null;
-    if (data.label.length > r * 0.5) return null;
+      {packedData.map(({ x, y, r, depth, data, children }) => {
+        if (depth <= 0) return null;
+        if (depth > maxDepth) return null;
+        const isParent = !!children && depth !== maxDepth;
+        if (!isParent) return null;
+        if (data.path === looseFilesId) return null;
+        if (r < 16 && selectedNodeId !== data.path) return null;
+        if (data.label.length > r * 0.5) return null;
 
-    const label = truncateString(
-      data.label,
-      r < 30 ? Math.floor(r / 2.7) + 3 : 100,
-    );
+        const label = truncateString(
+          data.label,
+          r < 30 ? Math.floor(r / 2.7) + 3 : 100,
+        );
 
-    let offsetR = r + 12 - depth * 4;
-    const fontSize = 16 - depth;
+        let offsetR = r + 12 - depth * 4;
+        const fontSize = 16 - depth;
 
-    return (
-      <g
-            key= { data.path }
-    style = {{ pointerEvents: "none", transition: "all 0.5s ease-out" }
-  }
-            transform = {`translate(${x}, ${y})`}
+        return (
+          <g
+            key={data.path}
+            style={{ pointerEvents: "none", transition: "all 0.5s ease-out" }}
+            transform={`translate(${x}, ${y})`}
           >
-  <CircleText
-              style={ { fontSize, transition: "all 0.5s ease-out" } }
-r = { Math.max(20, offsetR - 3) }
-fill = "#374151"
-stroke = "white"
-strokeWidth = "6"
-rotate = { depth * 1 - 0}
-text = { label }
-  />
-  <CircleText
-              style={ { fontSize, transition: "all 0.5s ease-out" } }
-fill = "#374151"
-rotate = { depth * 1 - 0}
-r = { Math.max(20, offsetR - 3) }
-text = { label }
-  />
-  </g>
+            <CircleText
+              style={{ fontSize, transition: "all 0.5s ease-out" }}
+              r={Math.max(20, offsetR - 3)}
+              fill="#374151"
+              stroke="white"
+              strokeWidth="6"
+              rotate={depth * 1 - 0}
+              text={label}
+            />
+            <CircleText
+              style={{ fontSize, transition: "all 0.5s ease-out" }}
+              fill="#374151"
+              rotate={depth * 1 - 0}
+              r={Math.max(20, offsetR - 3)}
+              text={label}
+            />
+          </g>
         );
       })}
 
-{
-  packedData.map(({ x, y, r, depth, data, children }) => {
-    if (depth <= 0) return null;
-    if (depth > maxDepth) return null;
-    const isParent = !!children;
-    // if (depth <= 1 && !children) runningR *= 3;
-    if (data.path === looseFilesId) return null;
-    const isHighlighted = filesChanged.includes(data.path);
-    const doHighlight = !!filesChanged.length;
-    if (isParent && !isHighlighted) return null;
-    if (selectedNodeId === data.path && !isHighlighted) return null;
-    if (
-      !(isHighlighted ||
-        (!doHighlight && !selectedNode) && r > 22)
-    ) {
-      return null;
-    }
+      {packedData.map(({ x, y, r, depth, data, children }) => {
+        if (depth <= 0) return null;
+        if (depth > maxDepth) return null;
+        const isParent = !!children;
+        // if (depth <= 1 && !children) runningR *= 3;
+        if (data.path === looseFilesId) return null;
+        const isHighlighted = filesChanged.includes(data.path);
+        const doHighlight = !!filesChanged.length;
+        if (isParent && !isHighlighted) return null;
+        if (selectedNodeId === data.path && !isHighlighted) return null;
+        if (
+          !(isHighlighted ||
+            (!doHighlight && !selectedNode) && r > 22)
+        ) {
+          return null;
+        }
 
-    const label = isHighlighted
-      ? data.label
-      : truncateString(data.label, Math.floor(r / 4) + 3);
+        const label = isHighlighted
+          ? data.label
+          : truncateString(data.label, Math.floor(r / 4) + 3);
 
-    return (
-      <g
-            key= { data.path }
-    style = {{
-      fill: doHighlight
-        ? isHighlighted ? "#FCE68A" : "#29081916"
-        : data.color,
-        transition: `transform ${isHighlighted ? "0.5s" : "0s"} ease-out`,
-            }
-  }
-            transform = {`translate(${x}, ${y})`}
+        return (
+          <g
+            key={data.path}
+            style={{
+              fill: doHighlight
+                ? isHighlighted ? "#FCE68A" : "#29081916"
+                : data.color,
+              transition: `transform ${isHighlighted ? "0.5s" : "0s"} ease-out`,
+            }}
+            transform={`translate(${x}, ${y})`}
           >
-  <text
-              style={
-  {
-    pointerEvents: "none",
-      opacity: 0.9,
-        fontSize: "14px",
-          fontWeight: 500,
-            transition: "all 0.5s ease-out",
-              }
-}
-fill = "#4B5563"
-textAnchor = "middle"
-dominantBaseline = "middle"
-stroke = "white"
-strokeWidth = "3"
-strokeLinejoin = "round"
-  >
-  { label }
-  < /text>
-  < text
-style = {{
-  pointerEvents: "none",
-    opacity: 1,
-      fontSize: "14px",
-        fontWeight: 500,
-          transition: "all 0.5s ease-out",
+            <text
+              style={{
+                pointerEvents: "none",
+                opacity: 0.9,
+                fontSize: "14px",
+                fontWeight: 500,
+                transition: "all 0.5s ease-out",
               }}
-textAnchor = "middle"
-dominantBaseline = "middle"
-  >
-  { label }
-  < /text>
-  < text
-style = {{
-  pointerEvents: "none",
-    opacity: 0.9,
-      fontSize: "14px",
-        fontWeight: 500,
-          mixBlendMode: "color-burn",
-            transition: "all 0.5s ease-out",
+              fill="#4B5563"
+              textAnchor="middle"
+              dominantBaseline="middle"
+              stroke="white"
+              strokeWidth="3"
+              strokeLinejoin="round"
+            >
+              {label}
+            </text>
+            <text
+              style={{
+                pointerEvents: "none",
+                opacity: 1,
+                fontSize: "14px",
+                fontWeight: 500,
+                transition: "all 0.5s ease-out",
               }}
-fill = "#110101"
-textAnchor = "middle"
-dominantBaseline = "middle"
-  >
-  { label }
-  < /text>
-  < /g>
+              textAnchor="middle"
+              dominantBaseline="middle"
+            >
+              {label}
+            </text>
+            <text
+              style={{
+                pointerEvents: "none",
+                opacity: 0.9,
+                fontSize: "14px",
+                fontWeight: 500,
+                mixBlendMode: "color-burn",
+                transition: "all 0.5s ease-out",
+              }}
+              fill="#110101"
+              textAnchor="middle"
+              dominantBaseline="middle"
+            >
+              {label}
+            </text>
+          </g>
         );
       })}
 
-{
-  !filesChanged.length && colorEncoding === "type" &&
-    <Legend fileTypes={ fileTypes } fileColors = { fileColors } />}
-{
-  !filesChanged.length && colorEncoding !== "type" &&
-    <ColorLegend scale={ colorScale } extent = { colorExtent } colorEncoding = { colorEncoding } />}
-</svg>
+      {!filesChanged.length && colorEncoding === "type" &&
+        <Legend fileTypes={fileTypes} fileColors={fileColors}/>}
+      {!filesChanged.length && colorEncoding !== "type" &&
+        <ColorLegend scale={colorScale} extent={colorExtent} colorEncoding={colorEncoding} />}
+    </svg>
   );
 };
 
@@ -411,80 +397,73 @@ const ColorLegend = ({ scale, extent, colorEncoding }) => {
   const ticks = scale.ticks(10);
   return (
     <g
-      transform= {`translate(${width - 160}, ${height - 90})`
-}
+      transform={`translate(${width - 160}, ${height - 90})`}
     >
-  <text
-        x={ 50 }
-y = "-5"
-fontSize = "10"
-textAnchor = "middle"
-  >
-  {/* @ts-ignore */ }
-{ colorEncoding === "number-of-changes" ? "Number of changes" : "Last change date" }
-</text>
-  < linearGradient id = "gradient" >
-  {
-    ticks.map((tick, i) => {
-      const color = scale(tick);
-      return (
-        <stop offset= { i / (ticks.length - 1)
-    } stopColor = { color } key = { i } />
-          );
-  })}
-</linearGradient>
-  < rect x = "0" width = "100" height = "13" fill = "url(#gradient)" />
-  {
-    extent.map((d, i) => (
       <text
-          key= { i }
-          x = { i? 100: 0 }
-          y = "23"
-          fontSize = "10"
-          textAnchor = { i? "end": "start" }
+        x={50}
+        y="-5"
+        fontSize="10"
+        textAnchor="middle"
       >
-      { formatD(d) }
-      < /text>
-    ))
-  }
-    < /g>
+        {/* @ts-ignore */}
+        {colorEncoding === "number-of-changes" ? "Number of changes" : "Last change date"}
+      </text>
+      <linearGradient id="gradient">
+        {ticks.map((tick, i) => {
+          const color = scale(tick);
+          return (
+            <stop offset={i / (ticks.length - 1)} stopColor={color} key={i} />
+          );
+        })}
+      </linearGradient>
+      <rect x="0" width="100" height="13" fill="url(#gradient)" />
+      {extent.map((d, i) => (
+        <text
+          key={i}
+          x={i ? 100 : 0}
+          y="23"
+          fontSize="10"
+          textAnchor={i ? "end" : "start"}
+        >
+          {formatD(d)}
+        </text>
+      ))}
+    </g>
   );
 };
 
-const Legend = ({ fileTypes = [], fileColors }) => {
+const Legend = ({ fileTypes = [], fileColors}) => {
   return (
     <g
-      transform= {`translate(${width - 60}, ${height - fileTypes.length * 15 -
-      20})`
-}
+      transform={`translate(${width - 60}, ${height - fileTypes.length * 15 -
+        20})`}
     >
-{
-  fileTypes.map((extension, i) => (
-    <g key= { i } transform = {`translate(0, ${i * 15})`} >
-  <circle
+      {fileTypes.map((extension, i) => (
+        <g key={i} transform={`translate(0, ${i * 15})`}>
+          <circle
             r="5"
-fill = { fileColors[extension]}
-  />
-  <text
+            fill={fileColors[extension]}
+          />
+          <text
             x="10"
-style = {{ fontSize: "14px", fontWeight: 300 }}
-dominantBaseline = "middle"
-  >
-            .{ extension }
-</text>
-  < /g>
+            style={{ fontSize: "14px", fontWeight: 300 }}
+            dominantBaseline="middle"
+          >
+            .{extension}
+          </text>
+        </g>
       ))}
-<g
+      <g
         fill="#9CA3AF"
-style = {{
-  fontWeight: 300,
-    fontStyle: "italic",
-      fontSize: 12,
+        style={{
+          fontWeight: 300,
+          fontStyle: "italic",
+          fontSize: 12,
         }}
       >
-  each dot sized by file size
-    < /g>
-    < /g>
+        each dot sized by file size
+      </g>
+    </g>
   );
 };
 
@@ -508,7 +487,6 @@ const processChild = (
     children = children[0].children;
   }
   const pathWithoutExtension = path?.split(".").slice(0, -1).join(".");
-  console.log(`${path} -----------------pathWithoutExtension:${pathWithoutExtension}`)
   const extension = name?.split(".").slice(-1)[0];
   const hasExtension = !!fileColors[extension];
 

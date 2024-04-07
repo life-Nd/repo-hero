@@ -43656,7 +43656,6 @@ var processChild = (child, getColor, cachedOrders, i = 0, fileColors) => {
     children2 = children2[0].children;
   }
   const pathWithoutExtension = path == null ? void 0 : path.split(".").slice(0, -1).join(".");
-  console.log(`${path} -----------------pathWithoutExtension:${pathWithoutExtension}`);
   const extension = name == null ? void 0 : name.split(".").slice(-1)[0];
   const hasExtension = !!fileColors[extension];
   if (isRoot && children2) {
