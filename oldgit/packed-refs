@@ -1,0 +1,4 @@
+# pack-refs with: peeled fully-peeled sorted 
+a999615bdab757559bf94bda1fe6eef232765f85 refs/remotes/origin/main
+46c9e5b0acbfcfb3e654a39b3e6e2ff70b961c2b refs/remotes/origin/no-git
+96d59b94747c3a2cb9f3638ef4d4f76f09eaae38 refs/remotes/origin/node20
