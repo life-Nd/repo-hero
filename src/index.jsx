@@ -1,3 +1,4 @@
+
 import { exec } from '@actions/exec'
 import * as core from '@actions/core'
 import * as artifact from '@actions/artifact'
@@ -7,7 +8,7 @@ import fs from "fs"
 
 import { processDir } from "./process-dir.js"
 import { Tree } from "./Tree.tsx"
-
+import flatten from "lodash/flatten";
 const main = async () => {
   core.info('[INFO] Usage https://github.com/life-Nd/repo-visualizer#readme')
 
@@ -25,7 +26,7 @@ const main = async () => {
 
   const rootPath = core.getInput("root_path") || ""; // Micro and minimatch do not support paths starting with ./
   const maxDepth = core.getInput("max_depth") || 9
-  const customFileColors = JSON.parse(core.getInput("file_colors") ||  '{}');
+  const customFileColors = JSON.parse(core.getInput("file_colors") || '{}');
   const colorEncoding = core.getInput("color_encoding") || "type"
   const commitMessage = core.getInput("commit_message") || "Repo visualizer: update diagram"
   const excludedPathsString = core.getInput("excluded_paths") || "node_modules,bower_components,dist,out,build,eject,.next,.netlify,.yarn,.git,.vscode,package-lock.json,yarn.lock"
@@ -36,8 +37,14 @@ const main = async () => {
   const excludedGlobs = excludedGlobsString.split(";");
 
   const branch = core.getInput("branch")
+  
   const data = await processDir(rootPath, excludedPaths, excludedGlobs);
-  console.log(`data: ${data}`)
+  const flattenTree = (d) => {
+    return d.children ? flatten(d.children.map(flattenTree)) : d;
+  };
+  const items = flattenTree(data);
+  console.log('🚀 items: ', items)
+  const paths = items.map((d)=> d);
 
   let doesBranchExist = true
 
@@ -45,7 +52,7 @@ const main = async () => {
     await exec('git', ['fetch'])
 
     try {
-      await exec('git', ['switch', '-c' , branch,'--track', `origin/${branch}`])
+      await exec('git', ['switch', '-c', branch, '--track', `origin/${branch}`])
     } catch {
       doesBranchExist = false
       core.info(`Branch ${branch} does not yet exist, creating ${branch}.`)
@@ -53,25 +60,36 @@ const main = async () => {
     }
   }
   const componentCodeString = ReactDOMServer.renderToStaticMarkup(
-    <Tree data={data} maxDepth={+maxDepth} colorEncoding={colorEncoding} customFileColors={customFileColors}/>
+    <Tree data={data} maxDepth={+maxDepth} colorEncoding={colorEncoding} customFileColors={customFileColors} />
   );
 
   const outputFile = core.getInput("output_file") || "./diagram.svg"
-
+  const outputPathsFile = "./paths.json"
   core.setOutput('svg', componentCodeString)
 
+  core.setOutput('json', paths)
+
+
   await fs.writeFileSync(outputFile, componentCodeString)
+  
+  await fs.writeFileSync(outputPathsFile, JSON.stringify(paths));
 
 
+  
+  await exec('git', ['add', outputPathsFile])
+  const diff2 = await execWithOutput('git', ['status', '--porcelain', outputPathsFile])
+  core.info(`diff2: ${diff2}`)
   await exec('git', ['add', outputFile])
   const diff = await execWithOutput('git', ['status', '--porcelain', outputFile])
   core.info(`diff: ${diff}`)
-  if (!diff) {
+  
+  if (!diff ) {
     core.info('[INFO] No changes to the repo detected, exiting')
     return
   }
 
-  const shouldPush = core.getBooleanInput('should_push')
+  const shouldPush = core.getInput('should_push')
+  console.log(`⚪️ ⚪️ ⚪️  shouldPush ${shouldPush}`)
   if (shouldPush) {
     core.startGroup('Commit and push diagram')
     await exec('git', ['commit', '-m', commitMessage])
