@@ -10,10 +10,10 @@ import { processDir } from "./process-dir.js"
 import { Tree } from "./Tree.tsx"
 import flatten from "lodash/flatten";
 const main = async () => {
-  core.info('[INFO] Usage https://github.com/life-Nd/repo-visualizer#readme')
+  core.info('[INFO] Usage https://github.com/life-Nd/repo-hero#readme')
 
   core.startGroup('Configuration')
-  const username = 'repo-visualizer'
+  const username = 'repo-hero'
   await exec('git', ['config', 'user.name', username])
   await exec('git', [
     'config',

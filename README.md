@@ -4,7 +4,7 @@ A GitHub Action that creates an SVG diagram of your repo. Read more [in the writ
 
 **Please note that this is an experiment. If you have feature requests, please submit a PR or fork and use the code any way you need.**
 
-For a full demo, check out the [life-Nd/repo-visualizer-demo](https://github.com/life-Nd/repo-visualizer-demo) repository.
+For a full demo, check out the [life-Nd/repo-hero-demo](https://github.com/life-Nd/repo-hero-demo) repository.
 
 ## Inputs
 
@@ -82,7 +82,7 @@ Default: `''` (no artifact)
 
 ### `file_colors`
 
-You can customize the colors for specific file extensions. Key/value pairs will extend the [default colors](https://github.com/life-Nd/repo-visualizer/pull/src/language-colors.json).
+You can customize the colors for specific file extensions. Key/value pairs will extend the [default colors](https://github.com/life-Nd/repo-hero/pull/src/language-colors.json).
 
 For example: '{"js": "red","ts": "green"}'
 default: '{}'
@@ -101,7 +101,7 @@ You'll need to run the `actions/checkout` Action beforehand, to check out the co
 - name: Checkout code
   uses: actions/checkout@master
 - name: Update diagram
-  uses: life-Nd/repo-visualizer@0.7.1
+  uses: life-Nd/repo-hero@0.7.1
   with:
     output_file: "images/diagram.svg"
     excluded_paths: "dist,node_modules"
@@ -122,7 +122,7 @@ Example:
 ```yaml
 - name: Update diagram
   id: make_diagram
-  uses: life-Nd/repo-visualizer@0.7.1
+  uses: life-Nd/repo-hero@0.7.1
   with:
     output_file: "output-diagram.svg"
     artifact_name: "my-diagram"
@@ -137,4 +137,4 @@ Note that this will still also create a commit, unless you specify `should_push:
 
 Alternatively, the SVG description of the diagram is available in the `svg` output,
 which you can refer to in your workflow as e.g. `${{ steps.make_diagram.outputs.svg }}`.
-# repo-visualizer
+# repo-hero

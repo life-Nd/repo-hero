@@ -43792,9 +43792,9 @@ var getSortOrder = (item, cachedOrders, i = 0) => {
 // src/index.jsx
 var import_flatten2 = __toModule(require_flatten());
 var main = async () => {
-  core.info("[INFO] Usage https://github.com/life-Nd/repo-visualizer#readme");
+  core.info("[INFO] Usage https://github.com/life-Nd/repo-hero#readme");
   core.startGroup("Configuration");
-  const username = "repo-visualizer";
+  const username = "repo-hero";
   await (0, import_exec.exec)("git", ["config", "user.name", username]);
   await (0, import_exec.exec)("git", [
     "config",
