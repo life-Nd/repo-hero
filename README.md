@@ -1,4 +1,4 @@
-# 🥷 🚀 Repo Hero  
+#  🥷   Repo 🔍 🔎 Hero 🚀
 
 Repo Hero is an enhanced GitHub Action derived from the original [Repo Visualizer](https://github.com/life-Nd/repo-hero), offering an advanced approach to repository exploration. Alongside generating SVG diagrams of your codebase, Repo Hero introduces a valuable addition -- a detailed JSON file containing comprehensive information about each file and its size. Read more in the [original write-up](https://octo.github.com/projects/repo-visualization).
 
