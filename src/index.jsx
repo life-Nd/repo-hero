@@ -28,7 +28,7 @@ const main = async () => {
   const maxDepth = core.getInput("max_depth") || 9
   const customFileColors = JSON.parse(core.getInput("file_colors") || '{}');
   const colorEncoding = core.getInput("color_encoding") || "type"
-  const commitMessage = core.getInput("commit_message") || "Repo visualizer: update diagram"
+  const commitMessage = core.getInput("commit_message") || "🥷 🚀 Repo Hero: Update DIAGRAM + PATHS"
   const excludedPathsString = core.getInput("excluded_paths") || "node_modules,bower_components,dist,out,build,eject,.next,.netlify,.yarn,.git,.vscode,package-lock.json,yarn.lock"
   const excludedPaths = excludedPathsString.split(",").map(str => str.trim())
 
