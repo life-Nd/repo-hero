@@ -4,7 +4,7 @@ Repo Hero is an enhanced GitHub Action derived from the original [Repo Visualize
 
 **Note: Repo Hero is an experimental project. Your feature requests and contributions are welcome via PRs or forks.**
 
-For a full demonstration, check out the [life-Nd/repo-hero-demo](https://github.com/life-Nd/repo-hero-demo) repository.
+For a full demonstration, check Repo-Hero in action [Agency-Website](https://github.com/raffaello-templates/Agency-website) repository.
 
 ## Key Features
 
