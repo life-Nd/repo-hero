@@ -12,13 +12,9 @@ export const processDir = async (rootPath = "", excludedPaths = [], excludedGlob
 
   const getFileStats = async (path = "") => {
     const stats = await fs.statSync(`./${path}`);
-    console.log(`🤖 path: ${path}`)
     const name = path.split("/").filter(Boolean).slice(-1)[0];
-    console.log(`🤖 name: ${name}`)
-    
     const size = stats.size;
     const relativePath = path.slice(rootPath.length + 1);
-    console.log(`🤖 relativePath: ${relativePath}`)
     return {
       name,
       path: path,

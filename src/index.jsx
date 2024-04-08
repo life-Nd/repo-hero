@@ -43,7 +43,7 @@ const main = async () => {
     return d.children ? flatten(d.children.map(flattenTree)) : d;
   };
   const items = flattenTree(data);
-  console.log('🚀 items: ', items)
+  // console.log('🚀 items: ', items)
   const paths = items.map((d)=> d);
 
   let doesBranchExist = true
@@ -89,7 +89,7 @@ const main = async () => {
   }
 
   const shouldPush = core.getInput('should_push')
-  console.log(`⚪️ ⚪️ ⚪️  shouldPush ${shouldPush}`)
+  // console.log(`⚪️ ⚪️ ⚪️  shouldPush ${shouldPush}`)
   if (shouldPush) {
     core.startGroup('Commit and push diagram')
     await exec('git', ['commit', '-m', commitMessage])

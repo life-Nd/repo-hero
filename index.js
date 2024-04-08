@@ -35990,12 +35990,9 @@ var processDir = async (rootPath = "", excludedPaths = [], excludedGlobs = []) =
   const fullPathFoldersToIgnore = new Set(foldersToIgnore.map((d2) => nodePath.join(rootPath, d2)));
   const getFileStats = async (path = "") => {
     const stats = await import_fs.default.statSync(`./${path}`);
-    console.log(`\u{1F916} path: ${path}`);
     const name = path.split("/").filter(Boolean).slice(-1)[0];
-    console.log(`\u{1F916} name: ${name}`);
     const size = stats.size;
     const relativePath = path.slice(rootPath.length + 1);
-    console.log(`\u{1F916} relativePath: ${relativePath}`);
     return {
       name,
       path,
@@ -43817,7 +43814,6 @@ var main = async () => {
     return d2.children ? (0, import_flatten2.default)(d2.children.map(flattenTree)) : d2;
   };
   const items = flattenTree(data);
-  console.log("\u{1F680} items: ", items);
   const paths = items.map((d2) => d2);
   let doesBranchExist = true;
   if (branch) {
@@ -43853,7 +43849,6 @@ var main = async () => {
     return;
   }
   const shouldPush = core.getInput("should_push");
-  console.log(`\u26AA\uFE0F \u26AA\uFE0F \u26AA\uFE0F  shouldPush ${shouldPush}`);
   if (shouldPush) {
     core.startGroup("Commit and push diagram");
     await (0, import_exec.exec)("git", ["commit", "-m", commitMessage]);
